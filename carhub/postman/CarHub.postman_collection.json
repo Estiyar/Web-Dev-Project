@@ -1,0 +1,1274 @@
+{
+  "info": {
+    "name": "CarHub API",
+    "description": "Complete Postman collection for the CarHub Django API. Run Register or Login first to populate access and refresh tokens automatically.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "refresh_token",
+      "value": ""
+    },
+    {
+      "key": "category_id",
+      "value": "1"
+    },
+    {
+      "key": "car_id",
+      "value": "1"
+    },
+    {
+      "key": "review_id",
+      "value": "1"
+    },
+    {
+      "key": "part_id",
+      "value": "1"
+    },
+    {
+      "key": "post_id",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.access) {",
+                  "  pm.collectionVariables.set('access_token', data.access);",
+                  "  if (pm.environment && typeof pm.environment.set === 'function') pm.environment.set('access_token', data.access);",
+                  "}",
+                  "if (data.refresh) {",
+                  "  pm.collectionVariables.set('refresh_token', data.refresh);",
+                  "  if (pm.environment && typeof pm.environment.set === 'function') pm.environment.set('refresh_token', data.refresh);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"test1234\",\n  \"password_confirm\": \"test1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/auth/register/",
+            "description": "Creates a new user and saves returned JWT tokens."
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.access) {",
+                  "  pm.collectionVariables.set('access_token', data.access);",
+                  "  if (pm.environment && typeof pm.environment.set === 'function') pm.environment.set('access_token', data.access);",
+                  "}",
+                  "if (data.refresh) {",
+                  "  pm.collectionVariables.set('refresh_token', data.refresh);",
+                  "  if (pm.environment && typeof pm.environment.set === 'function') pm.environment.set('refresh_token', data.refresh);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"test1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/auth/login/",
+            "description": "Logs the user in and refreshes saved access/refresh tokens."
+          }
+        },
+        {
+          "name": "Refresh Access Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.access) {",
+                  "  pm.collectionVariables.set('access_token', data.access);",
+                  "  if (pm.environment && typeof pm.environment.set === 'function') pm.environment.set('access_token', data.access);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/auth/refresh/",
+            "description": "Uses the saved refresh token to obtain a new access token."
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/auth/logout/"
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": "{{base_url}}/auth/profile/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "List Categories",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (Array.isArray(data) && data.length > 0 && data[0].id) {",
+                  "  pm.collectionVariables.set('category_id', String(data[0].id));",
+                  "  if (pm.environment && typeof pm.environment.set === 'function') pm.environment.set('category_id', String(data[0].id));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/categories/"
+          }
+        },
+        {
+          "name": "Create Category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.id) {",
+                  "  pm.collectionVariables.set('category_id', String(data.id));",
+                  "  if (pm.environment && typeof pm.environment.set === 'function') pm.environment.set('category_id', String(data.id));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"SUV\",\n  \"icon\": \"🚙\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/categories/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cars",
+      "item": [
+        {
+          "name": "List Cars",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (Array.isArray(data) && data.length > 0 && data[0].id) {",
+                  "  pm.collectionVariables.set('car_id', String(data[0].id));",
+                  "  if (pm.environment && typeof pm.environment.set === 'function') pm.environment.set('car_id', String(data[0].id));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/cars/"
+          }
+        },
+        {
+          "name": "List Cars With Filters",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cars/?category={{category_id}}&brand=Toyota&model=Camry&city=Алматы&search=Camry&bodyType=Sedan&fuelType=Petrol&transmission=Automatic&drivetrain=FWD&color=Black&condition=used&min_engine=2.0&max_engine=3.5&year_from=2018&year_to=2024&min_price=5000000&max_price=12000000&min_mileage=0&max_mileage=90000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cars",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "{{category_id}}"
+                },
+                {
+                  "key": "brand",
+                  "value": "Toyota"
+                },
+                {
+                  "key": "model",
+                  "value": "Camry"
+                },
+                {
+                  "key": "city",
+                  "value": "Алматы"
+                },
+                {
+                  "key": "search",
+                  "value": "Camry"
+                },
+                {
+                  "key": "bodyType",
+                  "value": "Sedan"
+                },
+                {
+                  "key": "fuelType",
+                  "value": "Petrol"
+                },
+                {
+                  "key": "transmission",
+                  "value": "Automatic"
+                },
+                {
+                  "key": "drivetrain",
+                  "value": "FWD"
+                },
+                {
+                  "key": "color",
+                  "value": "Black"
+                },
+                {
+                  "key": "condition",
+                  "value": "used"
+                },
+                {
+                  "key": "min_engine",
+                  "value": "2.0"
+                },
+                {
+                  "key": "max_engine",
+                  "value": "3.5"
+                },
+                {
+                  "key": "year_from",
+                  "value": "2018"
+                },
+                {
+                  "key": "year_to",
+                  "value": "2024"
+                },
+                {
+                  "key": "min_price",
+                  "value": "5000000"
+                },
+                {
+                  "key": "max_price",
+                  "value": "12000000"
+                },
+                {
+                  "key": "min_mileage",
+                  "value": "0"
+                },
+                {
+                  "key": "max_mileage",
+                  "value": "90000"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Car By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/cars/{{car_id}}/"
+          }
+        },
+        {
+          "name": "Create Car (JSON)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.id) {",
+                  "  pm.collectionVariables.set('car_id', String(data.id));",
+                  "  if (pm.environment && typeof pm.environment.set === 'function') pm.environment.set('car_id', String(data.id));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Toyota Camry 2020\",\n  \"brand\": \"Toyota\",\n  \"model\": \"Camry\",\n  \"year\": 2020,\n  \"price\": \"8500000\",\n  \"mileage\": 45000,\n  \"bodyType\": \"Sedan\",\n  \"engineVolume\": 2.5,\n  \"fuelType\": \"Petrol\",\n  \"transmission\": \"Automatic\",\n  \"drivetrain\": \"FWD\",\n  \"color\": \"Black\",\n  \"condition\": \"used\",\n  \"category\": {{category_id}},\n  \"city\": \"Алматы\",\n  \"description\": \"Отличное состояние, один владелец.\",\n  \"image_url\": \"https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&w=1200&q=80\",\n  \"is_active\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/cars/",
+            "description": "Creates a car listing with JSON body."
+          }
+        },
+        {
+          "name": "Create Car (Form-Data Upload)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.id) {",
+                  "  pm.collectionVariables.set('car_id', String(data.id));",
+                  "  if (pm.environment && typeof pm.environment.set === 'function') pm.environment.set('car_id', String(data.id));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "BMW X5 2022",
+                  "type": "text"
+                },
+                {
+                  "key": "brand",
+                  "value": "BMW",
+                  "type": "text"
+                },
+                {
+                  "key": "model",
+                  "value": "X5",
+                  "type": "text"
+                },
+                {
+                  "key": "year",
+                  "value": "2022",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "23500000",
+                  "type": "text"
+                },
+                {
+                  "key": "mileage",
+                  "value": "18000",
+                  "type": "text"
+                },
+                {
+                  "key": "bodyType",
+                  "value": "SUV",
+                  "type": "text"
+                },
+                {
+                  "key": "engineVolume",
+                  "value": "3.0",
+                  "type": "text"
+                },
+                {
+                  "key": "fuelType",
+                  "value": "Diesel",
+                  "type": "text"
+                },
+                {
+                  "key": "transmission",
+                  "value": "Automatic",
+                  "type": "text"
+                },
+                {
+                  "key": "drivetrain",
+                  "value": "AWD",
+                  "type": "text"
+                },
+                {
+                  "key": "color",
+                  "value": "White",
+                  "type": "text"
+                },
+                {
+                  "key": "condition",
+                  "value": "used",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "{{category_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "city",
+                  "value": "Астана",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Пример multipart-запроса с загрузкой файла изображения.",
+                  "type": "text"
+                },
+                {
+                  "key": "image_file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": "{{base_url}}/cars/",
+            "description": "Alternative create request for uploading car image files."
+          }
+        },
+        {
+          "name": "Update Car (JSON)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": \"8200000\",\n  \"mileage\": 47000,\n  \"color\": \"Graphite\",\n  \"description\": \"Обновлено через Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/cars/{{car_id}}/"
+          }
+        },
+        {
+          "name": "Update Car (Form-Data Upload)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "price",
+                  "value": "21900000",
+                  "type": "text"
+                },
+                {
+                  "key": "image_file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": "{{base_url}}/cars/{{car_id}}/"
+          }
+        },
+        {
+          "name": "Delete Car",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": "{{base_url}}/cars/{{car_id}}/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "List All Reviews",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (Array.isArray(data) && data.length > 0 && data[0].id) {",
+                  "  pm.collectionVariables.set('review_id', String(data[0].id));",
+                  "  if (pm.environment && typeof pm.environment.set === 'function') pm.environment.set('review_id', String(data[0].id));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/reviews/"
+          }
+        },
+        {
+          "name": "List Reviews For Car",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/reviews/?car={{car_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reviews",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "car",
+                  "value": "{{car_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Review",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.id) {",
+                  "  pm.collectionVariables.set('review_id', String(data.id));",
+                  "  if (pm.environment && typeof pm.environment.set === 'function') pm.environment.set('review_id', String(data.id));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"car\": {{car_id}},\n  \"rating\": 5,\n  \"text\": \"Отличный автомобиль и честное описание.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/reviews/"
+          }
+        },
+        {
+          "name": "Delete Review",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": "{{base_url}}/reviews/{{review_id}}/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Favorites",
+      "item": [
+        {
+          "name": "List Favorites",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": "{{base_url}}/favorites/"
+          }
+        },
+        {
+          "name": "Toggle Favorite",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"car\": {{car_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/favorites/",
+            "description": "Adds the car to favorites on first run and removes it on the next run."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Parts",
+      "item": [
+        {
+          "name": "List Parts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (Array.isArray(data) && data.length > 0 && data[0].id) {",
+                  "  pm.collectionVariables.set('part_id', String(data[0].id));",
+                  "  if (pm.environment && typeof pm.environment.set === 'function') pm.environment.set('part_id', String(data[0].id));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/parts/"
+          }
+        },
+        {
+          "name": "List Parts With Filters",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/parts/?brand=Toyota&model=Camry&category=Brake%20Pads&condition=used&city=Алматы&min_price=5000&max_price=75000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "parts",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "brand",
+                  "value": "Toyota"
+                },
+                {
+                  "key": "model",
+                  "value": "Camry"
+                },
+                {
+                  "key": "category",
+                  "value": "Brake Pads"
+                },
+                {
+                  "key": "condition",
+                  "value": "used"
+                },
+                {
+                  "key": "city",
+                  "value": "Алматы"
+                },
+                {
+                  "key": "min_price",
+                  "value": "5000"
+                },
+                {
+                  "key": "max_price",
+                  "value": "75000"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Part By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/parts/{{part_id}}/"
+          }
+        },
+        {
+          "name": "Create Part (JSON)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.id) {",
+                  "  pm.collectionVariables.set('part_id', String(data.id));",
+                  "  if (pm.environment && typeof pm.environment.set === 'function') pm.environment.set('part_id', String(data.id));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Передние тормозные колодки\",\n  \"brand\": \"Toyota\",\n  \"model\": \"Camry\",\n  \"partCategory\": \"Brake Pads\",\n  \"condition\": \"new\",\n  \"price\": \"25000\",\n  \"city\": \"Алматы\",\n  \"description\": \"Оригинальные колодки, комплект 4 шт.\",\n  \"image\": \"https://images.unsplash.com/photo-1616789916664-f5b4db2d0b0f?auto=format&fit=crop&w=1200&q=80\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/parts/"
+          }
+        },
+        {
+          "name": "Create Part (Form-Data Upload)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.id) {",
+                  "  pm.collectionVariables.set('part_id', String(data.id));",
+                  "  if (pm.environment && typeof pm.environment.set === 'function') pm.environment.set('part_id', String(data.id));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Фара левая",
+                  "type": "text"
+                },
+                {
+                  "key": "brand",
+                  "value": "BMW",
+                  "type": "text"
+                },
+                {
+                  "key": "model",
+                  "value": "X5",
+                  "type": "text"
+                },
+                {
+                  "key": "partCategory",
+                  "value": "Headlight",
+                  "type": "text"
+                },
+                {
+                  "key": "condition",
+                  "value": "used",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "180000",
+                  "type": "text"
+                },
+                {
+                  "key": "city",
+                  "value": "Шымкент",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Пример multipart-запроса с файлом для запчасти.",
+                  "type": "text"
+                },
+                {
+                  "key": "image_file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": "{{base_url}}/parts/"
+          }
+        },
+        {
+          "name": "Update Part (JSON)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": \"22000\",\n  \"condition\": \"used\",\n  \"description\": \"Цена и состояние обновлены через Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/parts/{{part_id}}/"
+          }
+        },
+        {
+          "name": "Update Part (Form-Data Upload)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "price",
+                  "value": "175000",
+                  "type": "text"
+                },
+                {
+                  "key": "image_file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": "{{base_url}}/parts/{{part_id}}/"
+          }
+        },
+        {
+          "name": "Delete Part",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": "{{base_url}}/parts/{{part_id}}/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Community",
+      "item": [
+        {
+          "name": "List Posts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (Array.isArray(data) && data.length > 0 && data[0].id) {",
+                  "  pm.collectionVariables.set('post_id', String(data[0].id));",
+                  "  if (pm.environment && typeof pm.environment.set === 'function') pm.environment.set('post_id', String(data[0].id));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/community/posts/"
+          }
+        },
+        {
+          "name": "List Posts By Brand",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/community/posts/?brand=Toyota",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "community",
+                "posts",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "brand",
+                  "value": "Toyota"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Post By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/community/posts/{{post_id}}/"
+          }
+        },
+        {
+          "name": "Create Post",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.id) {",
+                  "  pm.collectionVariables.set('post_id', String(data.id));",
+                  "  if (pm.environment && typeof pm.environment.set === 'function') pm.environment.set('post_id', String(data.id));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Проблема с расходом масла\",\n  \"description\": \"Кто сталкивался с повышенным расходом масла на Toyota Camry 70 2.5?\",\n  \"brand\": \"Toyota\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/community/posts/"
+          }
+        },
+        {
+          "name": "Add Comment To Post",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Проверь вентиляцию картера и сервисную историю.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/community/posts/{{post_id}}/comments/"
+          }
+        },
+        {
+          "name": "Delete Post",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": "{{base_url}}/community/posts/{{post_id}}/"
+          }
+        }
+      ]
+    }
+  ]
+}
