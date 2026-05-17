@@ -35,7 +35,7 @@ class Car(models.Model):
     year = models.IntegerField()
     price = models.DecimalField(max_digits=12, decimal_places=2)
     mileage = models.IntegerField(default=0)
-    body_type = models.CharField(max_length=50, default='Sedan')
+    body_type = models.CharxField(max_length=50, default='Sedan')
     engine_volume = models.DecimalField(max_digits=3, decimal_places=1, default=2.0)
     fuel_type = models.CharField(max_length=50, default='Petrol')
     transmission = models.CharField(max_length=50, default='Automatic')
